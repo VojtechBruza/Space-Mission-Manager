@@ -5,12 +5,12 @@ import Entity.Spacecraft;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-//import org.springframework.stereotype.Repository; TODO add springframework dependency to pom.xml
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Vojtech Bruza
  */
-//@Repository
+@Repository
 public class SpacecraftDaoImpl implements SpacecraftDao {
 
     @PersistenceContext
