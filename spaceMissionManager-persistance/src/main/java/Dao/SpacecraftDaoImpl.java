@@ -33,8 +33,8 @@ public class SpacecraftDaoImpl implements SpacecraftDao {
 
     @Override
     public List<Spacecraft> findAllSpacecrafts(String type) {
-        //TODO
-        return null;
+        //TODO ? need to discuss why we need type, is it in MVP? why add complications
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -44,7 +44,9 @@ public class SpacecraftDaoImpl implements SpacecraftDao {
 
     @Override
     public void updateSpacecraft(Spacecraft spacecraft) {
-        //TODO
+        em.getTransaction().begin();
+        em.merge(spacecraft); //use persist instead?
+        em.getTransaction().commit();
     }
 
 }
