@@ -1,6 +1,6 @@
-package Dao;
+package cz.muni.fi.Dao;
 
-import Entity.Spacecraft;
+import cz.muni.fi.Entity.Spacecraft;
 
 import java.util.List;
 

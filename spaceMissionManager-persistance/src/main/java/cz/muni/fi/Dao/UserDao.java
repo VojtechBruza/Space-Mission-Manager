@@ -1,6 +1,6 @@
-package Dao;
+package cz.muni.fi.Dao;
 
-import Entity.User;
+import cz.muni.fi.Entity.User;
 
 import java.util.List;
 

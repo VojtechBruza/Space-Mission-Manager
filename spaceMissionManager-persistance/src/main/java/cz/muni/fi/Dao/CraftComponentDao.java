@@ -1,6 +1,6 @@
-package Dao;
+package cz.muni.fi.Dao;
 
-import Entity.CraftComponent;
+import cz.muni.fi.Entity.CraftComponent;
 
 import java.util.List;
 

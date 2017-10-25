@@ -1,4 +1,4 @@
-package Entity;
+package cz.muni.fi.Entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

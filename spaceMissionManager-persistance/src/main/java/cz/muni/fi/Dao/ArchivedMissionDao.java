@@ -1,7 +1,7 @@
-package Dao;
+package cz.muni.fi.Dao;
 
-import Entity.ArchivedMission;
-import Entity.Mission;
+import cz.muni.fi.Entity.ArchivedMission;
+import cz.muni.fi.Entity.Mission;
 
 import java.util.List;
 

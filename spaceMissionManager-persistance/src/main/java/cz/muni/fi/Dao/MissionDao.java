@@ -1,8 +1,8 @@
-package Dao;
+package cz.muni.fi.Dao;
 
-import Entity.Mission;
-import Entity.Spacecraft;
-import Entity.User;
+import cz.muni.fi.Entity.Mission;
+import cz.muni.fi.Entity.Spacecraft;
+import cz.muni.fi.Entity.User;
 
 import java.time.LocalDate;
 import java.util.List;
