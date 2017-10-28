@@ -9,4 +9,7 @@ public class CraftComponent {
 	private ZonedDateTime readyDate;
 	private Long id;
 
+	public boolean isReadyToUse() {
+		return readyToUse;
+	}
 }
