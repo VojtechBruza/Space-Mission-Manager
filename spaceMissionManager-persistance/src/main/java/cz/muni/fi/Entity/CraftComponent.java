@@ -6,7 +6,7 @@ public class CraftComponent {
 
 	private boolean readyToUse;
 	private String name;
-	private ZonedDateTime readyDate;
+	private ZonedDateTime estimatedReadyDate;
 	private Long id;
 
 	public boolean isReadyToUse() {
