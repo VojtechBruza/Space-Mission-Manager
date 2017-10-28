@@ -7,24 +7,18 @@ import java.util.List;
 public interface SpacecraftDao {
 
 	/**
-	 * 
-	 * @param spacecraft
+	 * Create new entity in the database
+	 * @param spacecraft entity to be persisted
 	 */
 	void addSpacecraft(Spacecraft spacecraft);
 
 	/**
-	 * 
-	 * @param spacecraft
+	 * Remove entity from the database
+	 * @param spacecraft entity to be deleted
 	 */
 	void removeSpacecraft(Spacecraft spacecraft);
 
 	List<Spacecraft> findAllSpacecrafts();
-
-	/**
-	 * 
-	 * @param type
-	 */
-	List<Spacecraft> findAllSpacecrafts(String type);
 
 	/**
 	 * 
