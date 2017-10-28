@@ -8,22 +8,22 @@ import java.util.List;
 @Entity
 public class Spacecraft {
 
+	//ATTRIBUTES
 	@Id
 	private Long id;
 
-	private String type; //	Probes vs astronauts? type not needed
+	private String type; //just probes or astronauts...
 
 	private String name;
+
 	@OneToMany
 	private List<CraftComponent> allComponents;
 
-//	private int unfinishedComponents; //rather use method?
 
 
-	public Spacecraft(List<CraftComponent> allComponents) {
-		this.allComponents = allComponents;
-	}
+	//METHODS
 
+	//TODO managing components - add, remove...
 
 	public String getName() {
 		return name;
