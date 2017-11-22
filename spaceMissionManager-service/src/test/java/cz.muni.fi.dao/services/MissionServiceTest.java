@@ -1,4 +1,4 @@
-package java.cz.muni.fi.dao.services;
+package cz.muni.fi.dao.services;
 
 import cz.muni.fi.config.ServiceConfiguration;
 import cz.muni.fi.dao.MissionDao;
@@ -60,7 +60,7 @@ public class MissionServiceTest extends AbstractTestNGSpringContextTests {
             missions.put(index, mockedMission);
             counter++;
             return mockedMission;
-        })
+        });
 
         when(missionDao.updateMission(any(Mission.class))).then(invoke -> {
             Mission mockedMission = invoke.getArgumentAt(0, Mission.class);

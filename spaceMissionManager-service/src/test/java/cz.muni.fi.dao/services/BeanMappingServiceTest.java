@@ -1,4 +1,4 @@
-package java.cz.muni.fi.dao.services;
+package cz.muni.fi.dao.services;
 
 import cz.muni.fi.config.ServiceConfiguration;
 import cz.muni.fi.dto.MissionDTO;
