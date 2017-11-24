@@ -24,19 +24,19 @@ import static org.assertj.core.api.Assertions.*;
 @ContextConfiguration(classes = ApplicationContext.class)
 public class SpacecraftDaoTest extends AbstractTestNGSpringContextTests {
     @Autowired
-    SpacecraftDao spacecraftDao;
+    private SpacecraftDao spacecraftDao;
 
     @Autowired
-    MissionDao missionDao;
+    private MissionDao missionDao;
 
     @Autowired
-    CraftComponentDao componentDao;
+    private CraftComponentDao componentDao;
 
     private Spacecraft spacecraft1;
     private Spacecraft spacecraft2;
 
     @PersistenceUnit
-    EntityManagerFactory entityManagerFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     @BeforeMethod
     public void setUp(){

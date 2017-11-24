@@ -1,30 +1,26 @@
 package cz.muni.fi.dto;
 
-
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SpacecraftDTO {
-
-	private Long id;
+public class SpacecraftCreateDTO {
 
 	private String type;
 
+	@NotNull
+	@Size(min = 3, max = 50)
 	private String name;
 
+	@NotNull
+	@Size(min = 1)
 	private Set<CraftComponentDTO> components = new HashSet<>();
 
+	@NotNull
 	private MissionDTO mission;
 
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -34,9 +30,6 @@ public class SpacecraftDTO {
 		this.name = name;
 	}
 
-	public void addComponent(CraftComponentDTO c){
-		components.add(c);
-	}
 
 	public Set<CraftComponentDTO> getComponents() {
 		return Collections.unmodifiableSet(components);
@@ -50,25 +43,15 @@ public class SpacecraftDTO {
 		this.mission = mission;
 	}
 
+	public void setComponents(Set<CraftComponentDTO> components) {
+		this.components = components;
+	}
+
 	public String getType() {
 		return type;
 	}
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof SpacecraftDTO)) return false;
-		SpacecraftDTO spacecraft = (SpacecraftDTO) o;
-		return getName() != null ? getName().equals(spacecraft.getName()) : spacecraft.getName() == null;
-	}
-
-	@Override
-	public int hashCode() {
-		return getName() != null ? getName().hashCode() : 0;
 	}
 }

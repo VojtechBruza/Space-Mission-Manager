@@ -24,14 +24,14 @@ import static org.assertj.core.api.Assertions.*;
 @ContextConfiguration(classes = ApplicationContext.class)
 public class CraftComponentDaoTest extends AbstractTestNGSpringContextTests {
     @Autowired
-    CraftComponentDao craftComponentDao;
+    private CraftComponentDao craftComponentDao;
 
-    CraftComponent orbitalModule;
-    CraftComponent heatShield;
-    CraftComponent retroRocket;
+    private CraftComponent orbitalModule;
+    private CraftComponent heatShield;
+    private CraftComponent retroRocket;
 
     @PersistenceUnit
-    EntityManagerFactory entityManagerFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     @BeforeMethod
 	public void setUp() {

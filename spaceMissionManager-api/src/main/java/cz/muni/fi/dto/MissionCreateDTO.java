@@ -1,23 +1,36 @@
 package cz.muni.fi.dto;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MissionDTO {
+public class MissionCreateDTO {
 
-	private Long id;
-
+	@NotNull
 	private Set<UserDTO> astronauts = new HashSet<>();
 
+	@Size(min = 1)
+	@NotNull
 	private Set<SpacecraftDTO> spacecrafts = new HashSet<>();
 
+	@NotNull
+	@Size(min = 3, max = 50)
 	private String name;
 
+	@NotNull
+	@Size(min = 3, max = 255)
 	private String destination;
+
+	@NotNull
+	@Future
 	private ZonedDateTime eta;
+
+	@NotNull
+	@Size(min = 3, max = 255)
 	private String missionDescription;
 
 
@@ -26,12 +39,29 @@ public class MissionDTO {
 	private LocalDate endDate;
 
 
-	public Long getId() {
-		return id;
+	public Set<UserDTO> getAstronauts() {
+		return astronauts;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+
+	public Set<SpacecraftDTO> getSpacecrafts() {
+		return spacecrafts;
+	}
+
+	public void setAstronauts(Set<UserDTO> astronauts) {
+		this.astronauts = astronauts;
+	}
+
+	public void setSpacecrafts(Set<SpacecraftDTO> spacecrafts) {
+		this.spacecrafts = spacecrafts;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDestination() {
@@ -80,52 +110,5 @@ public class MissionDTO {
 
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
-	}
-
-	public Set<UserDTO> getAstronauts() {
-		return Collections.unmodifiableSet(astronauts);
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Set<SpacecraftDTO> getSpacecrafts() {
-		return Collections.unmodifiableSet(spacecrafts);
-	}
-
-	public void addAstronaut(UserDTO user){
-		astronauts.add(user);
-	}
-
-	public void removeAstronaut(UserDTO user){
-		astronauts.remove(user);
-	}
-
-	public void addSpacecraft(SpacecraftDTO spacecraft){
-		spacecrafts.add(spacecraft);
-	}
-
-	public void removeSpacecraft(SpacecraftDTO spacecraft){
-		spacecrafts.remove(spacecraft);
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof MissionDTO)) return false;
-
-		MissionDTO mission = (MissionDTO) o;
-
-		return getName() != null ? getName().equals(mission.getName()) : mission.getName() == null;
-	}
-
-	@Override
-	public int hashCode() {
-		return getName() != null ? getName().hashCode() : 0;
 	}
 }

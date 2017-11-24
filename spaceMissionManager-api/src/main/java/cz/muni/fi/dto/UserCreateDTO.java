@@ -1,21 +1,29 @@
 package cz.muni.fi.dto;
 
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
-public class UserDTO {
+public class UserCreateDTO {
 
-	private Long id;
-
+	@NotNull
 	private String name;
 
+	@NotNull
+	@Past
 	private LocalDate birthDate;
 
+	@NotNull
+	@Pattern(regexp = ".+@.+\\....?")
+	@Size(min = 3, max = 150)
 	private String email;
 
+	@NotNull
+	@Size(min = 3, max = 150)
 	private String password;
 
 	private boolean isManager;
 
+	@Min(0)
 	private int experienceLevel;
 
 
@@ -25,13 +33,6 @@ public class UserDTO {
 
 	private MissionDTO mission;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -53,8 +54,8 @@ public class UserDTO {
 		return email;
 	}
 
-	public void setEmail(String username) {
-		this.email = username;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassword() {
@@ -103,20 +104,5 @@ public class UserDTO {
 
 	public void setMission(MissionDTO mission) {
 		this.mission = mission;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof UserDTO)) return false;
-
-		UserDTO user = (UserDTO) o;
-
-		return getEmail() != null ? getEmail().equals(user.getEmail()) : user.getEmail() == null;
-	}
-
-	@Override
-	public int hashCode() {
-		return getEmail() != null ? getEmail().hashCode() : 0;
 	}
 }

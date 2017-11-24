@@ -30,20 +30,20 @@ import static org.assertj.core.api.Assertions.*;
 public class UserDaoImplTest extends AbstractTestNGSpringContextTests {
 
 	@Autowired
-	UserDao userDao;
+	private UserDao userDao;
 
 	@Autowired
-	MissionDao missionDao;
+	private MissionDao missionDao;
 
 	@Autowired
-	SpacecraftDao spacecraftDao;
+	private SpacecraftDao spacecraftDao;
 
 	@Autowired
-	CraftComponentDao craftComponentDao;
+	private CraftComponentDao craftComponentDao;
 
 
 	@PersistenceUnit
-	EntityManagerFactory entityManagerFactory;
+	private EntityManagerFactory entityManagerFactory;
 
 	private User gagarin;
 	private User armstrong;

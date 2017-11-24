@@ -1,26 +1,27 @@
 package cz.muni.fi.dto;
 
+
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.ZonedDateTime;
 
-public class CraftComponentDTO {
-	private Long id;
+
+public class CraftComponentCreateDTO {
+
+	@NotNull
+	@Size(min = 3, max = 50)
+	private String name;
 
 	private boolean readyToUse;
 
-	private String name;
-
+	@NotNull
 	private SpacecraftDTO spacecraft;
 
+	@Future
+	@NotNull
 	private ZonedDateTime readyDate;
 
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public boolean isReadyToUse() {
 		return readyToUse;
@@ -52,20 +53,5 @@ public class CraftComponentDTO {
 
 	public void setReadyDate(ZonedDateTime readyDate) {
 		this.readyDate = readyDate;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		CraftComponentDTO that = (CraftComponentDTO) o;
-
-		return getName().equals(that.getName());
-	}
-
-	@Override
-	public int hashCode() {
-		return getName().hashCode();
 	}
 }
