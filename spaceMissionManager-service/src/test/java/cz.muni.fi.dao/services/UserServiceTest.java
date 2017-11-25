@@ -205,14 +205,14 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void updateUserName(){
-        User u = userDao.findUserById(1L); //TODO value, not reference (watch out)
-        String originalName = u.getName();
-        String newName = "Franta";
-        u.setName(newName);
+        User u1 = TestUtils.createUser("Franta");
+        u1 = userDao.addUser(u1);
+        User updatedUser = TestUtils.createUser("Pepa");
+        updatedUser.setId(u1.getId());
 
-        assertThat(userService.findUserById(1L).getName()).isEqualTo(originalName);
-        userService.updateUser(u);
-        assertThat(userService.findUserById(1L).getName()).isEqualTo(newName);
+        assertThat(userDao.findUserById(u1.getId()).getName()).isEqualTo(u1.getName());
+        userService.updateUser(updatedUser);
+        assertThat(userDao.findUserById(u1.getId()).getName()).isEqualTo(updatedUser.getName());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
