@@ -24,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void acceptAssignedMission(User user){
+        if(user == null){
+            throw new IllegalArgumentException("User must not be null.");
+        }
         if(user.missionStatusPending()){
             user.setAcceptedMission(true);
         } else {
