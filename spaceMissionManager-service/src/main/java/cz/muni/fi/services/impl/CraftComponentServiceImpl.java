@@ -24,26 +24,58 @@ public class CraftComponentServiceImpl implements CraftComponentService {
 
     @Override
     public void addComponent(CraftComponent craftComponent) throws DataAccessException {
-        craftComponentDao.addComponent(craftComponent);
+        if(craftComponent == null){
+            throw new IllegalArgumentException("Component must not be null.");
+        }
+        try {
+            craftComponentDao.addComponent(craftComponent);
+        } catch (Throwable e) {
+            throw new ServiceDataAccessException("Error when adding component.", e);
+        }
     }
 
     @Override
     public List<CraftComponent> findAllComponents() throws DataAccessException {
-        return Collections.unmodifiableList(craftComponentDao.findAllComponents());
+        try {
+            return Collections.unmodifiableList(craftComponentDao.findAllComponents());
+        }  catch (Throwable e) {
+            throw new ServiceDataAccessException("Could not find all components.", e);
+        }
     }
 
     @Override
     public CraftComponent findComponentById(Long id) throws DataAccessException {
-        return craftComponentDao.findComponentById(id);
+        if(id == null){
+            throw new IllegalArgumentException("Id must not be null.");
+        }
+        try{
+            return craftComponentDao.findComponentById(id);
+        } catch (Throwable e) {
+            throw new ServiceDataAccessException("Error when finding component.", e);
+        }
     }
 
     @Override
     public void updateComponent(CraftComponent craftComponent) throws DataAccessException {
-        craftComponentDao.updateComponent(craftComponent);
+        if(craftComponent == null){
+            throw new IllegalArgumentException("Component must not be null.");
+        }
+        try {
+            craftComponentDao.updateComponent(craftComponent);
+        }  catch (Throwable e) {
+            throw new ServiceDataAccessException("Error when updating component.", e);
+        }
     }
 
     @Override
     public void removeComponent(CraftComponent craftComponent) throws DataAccessException {
-        craftComponentDao.removeComponent(craftComponent);
+        if(craftComponent == null){
+            throw new IllegalArgumentException("Component must not be null.");
+        }
+        try {
+            craftComponentDao.removeComponent(craftComponent);
+        }  catch (Throwable e) {
+            throw new ServiceDataAccessException("Error when removing component.", e);
+        }
     }
 }

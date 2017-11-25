@@ -22,18 +22,19 @@ import java.util.List;
 public class MissionServiceImpl implements MissionService {
     @Inject
     MissionDao missionDao;
-    //TODO javadoc
-    //TODO exceptions?
-    //TODO other functions that are doing some logic
-    //TODO modify interfaces to offer business functions
 
-//Archive mission - add endDate and move all the information to the result string resetting all the other attributes
-    public void archive(Long missionId, LocalDate date){
-        if(date.isAfter(LocalDate.now())){
-            throw new IllegalArgumentException("Mission end date must be in the past");
+    @Override
+    public void archive(Mission mission, LocalDate endDate){
+        if(mission == null){
+            throw new IllegalArgumentException("Mission must not be null.");
         }
-        Mission mission = missionDao.findMissionById(missionId);
-        mission.setEndDate(date);
+        if(endDate == null){
+            throw new IllegalArgumentException("End date must not be null.");
+        }
+        if(endDate.isAfter(LocalDate.now())){
+            throw new IllegalArgumentException("Mission end date must be in the past.");
+        }
+        mission.setEndDate(endDate);
         mission.setActive(false);
         mission.setResult("Mission{" +
                         "astronauts=" + mission.getAstronauts() +
@@ -44,38 +45,85 @@ public class MissionServiceImpl implements MissionService {
                         ", missionDescription='" + mission.getMissionDescription() + '\'' +
                         ", endDate=" + mission.getEndDate() +
                     '}');
-        updateMission(mission);
+        try {
+            missionDao.updateMission(mission);
+        } catch (Throwable e) {
+            throw new ServiceDataAccessException("Could not archive mission.", e);
+        }
     }
 
     @Override
     public void createMission(Mission mission) throws DataAccessException {
-        missionDao.createMission(mission);
+        if (mission == null){
+            throw new IllegalArgumentException("Mission must not be null.");
+        }
+        try {
+            missionDao.createMission(mission);
+        } catch (Throwable e) {
+            throw new ServiceDataAccessException("Could not create mission.", e);
+        }
     }
 
     @Override
     public void cancelMission(Mission mission) throws DataAccessException {
-        missionDao.cancelMission(mission);
+        if (mission == null){
+            throw new IllegalArgumentException("Mission must not be null.");
+        }
+        try {
+            missionDao.cancelMission(mission);
+        } catch (Throwable e) {
+            throw new ServiceDataAccessException("Could not cancel mission.", e);
+        }
     }
 
     @Override
     public List<Mission> findAllMissions() throws DataAccessException {
-        return Collections.unmodifiableList(missionDao.findAllMissions());
+        try {
+            return Collections.unmodifiableList(missionDao.findAllMissions());
+        } catch (Throwable e) {
+            throw new ServiceDataAccessException("Could not find missions.", e);
+        }
     }
 
     @Override
     public List<Mission> findAllMissions(boolean active) throws DataAccessException {
-        return Collections.unmodifiableList(missionDao.findAllMissions(active));
+        try {
+            return Collections.unmodifiableList(missionDao.findAllMissions(active));
+        } catch (Throwable e) {
+            throw new ServiceDataAccessException("Could not find missions.", e);
+        }
     }
 
     @Override
     public Mission findMissionById(Long id) throws DataAccessException {
-        return missionDao.findMissionById(id);
+        if (id == null){
+            throw new IllegalArgumentException("Id must not be null.");
+        }
+        try {
+            return missionDao.findMissionById(id);
+        } catch (Throwable e) {
+            throw new ServiceDataAccessException("Could not find mission.", e);
+        }
     }
 
     @Override
     public void updateMission(Mission mission) throws DataAccessException {
-        if(mission.isActive())
-            missionDao.updateMission(mission);
-        else throw new IllegalArgumentException("Cannot modify archived mission");
+        if (mission == null){
+            throw new IllegalArgumentException("Mission must not be null.");
+        }
+        boolean missionActive;
+        try {
+            missionActive = mission.isActive() && missionDao.findMissionById(mission.getId()).isActive();
+        } catch (Throwable e){
+            throw new ServiceDataAccessException("Could not find mission.");
+        }
+        if(missionActive) {
+            try {
+                missionDao.updateMission(mission);
+            } catch (Throwable e) {
+                throw new ServiceDataAccessException("Could not update mission.", e);
+            }
+        }
+        else throw new IllegalArgumentException("Cannot modify already archived mission");
     }
 }

@@ -7,6 +7,23 @@ import java.util.List;
 
 public interface UserService {
 	/**
+	 * Confirm mission for given user, leaving explanation empty.
+	 * Set acceptedMission to true.
+	 * @param user given user to change
+	 */
+	public void acceptAssignedMission(User user);
+
+	/**
+	 * Reject mission for given user and add explanation.
+	 * Leave acceptedMission false and add astronauts explanation.
+	 * Also removes the astronaut from the mission's list of astronauts.
+	 * @param user given user to change
+	 * @param explanation nonempty explanation why user did not accepted given mission
+	 * @throws IllegalArgumentException when the explanation is empty
+	 */
+	public void rejectAssignedMission(User user, String explanation) throws IllegalArgumentException;
+
+	/**
 	 * Persist user into database
 	 *
 	 * @param user instance of user

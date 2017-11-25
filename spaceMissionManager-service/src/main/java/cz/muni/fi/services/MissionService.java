@@ -3,9 +3,17 @@ package cz.muni.fi.services;
 import cz.muni.fi.entity.Mission;
 import org.springframework.dao.DataAccessException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface MissionService {
+	/**
+	 * Archives given mission.
+	 * Sets the mission's end date and result string - saving attributes of the mission object.
+	 * @param mission mission to archive
+	 * @param endDate must be in the past, not in the future
+	 */
+	void archive(Mission mission, LocalDate endDate);
 
 	/**
 	 *
