@@ -1,7 +1,9 @@
 package cz.muni.fi.dao.services;
 
 import cz.muni.fi.config.ServiceConfiguration;
+import cz.muni.fi.dao.MissionDao;
 import cz.muni.fi.dao.UserDao;
+import cz.muni.fi.entity.Mission;
 import cz.muni.fi.entity.User;
 import cz.muni.fi.services.UserService;
 import org.mockito.InjectMocks;
@@ -32,6 +34,8 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest extends AbstractTestNGSpringContextTests {
     @Mock
     private UserDao userDao;
+    @Mock
+    private MissionDao missionDao;
 
     @Autowired
     @InjectMocks
@@ -39,39 +43,46 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
 
     private Long idCounter;
     private Map<Long, User> users = new HashMap<>();
+    private Map<Long, Mission> missions = new HashMap<>();
 
     @BeforeClass
     public void beforeClass() {
         MockitoAnnotations.initMocks(this);
-        //TODO correct mocking
+
         when(userDao.addUser(any(User.class))).then(invoke -> {
-            User mockedUser = invoke.getArgumentAt(0, User.class);
-            if (mockedUser.getId() != null) {
+            User user = invoke.getArgumentAt(0, User.class);
+
+            if (user.getId() != null) {
                 throw new IllegalArgumentException("User already exist");
             }
-            if(checkUserNames(mockedUser.getName())){
+            if(checkUserNames(user.getName())){
                 throw new IllegalArgumentException("User name already exist");
             }
             long id = idCounter;
-            mockedUser.setId(id);
-            users.put(id, mockedUser);
+            user.setId(id);
+            users.put(id, user);
             idCounter++;
-            return mockedUser;
+            return user;
         });
 
         when(userDao.updateUser(any(User.class))).then(invoke -> {
-            User mockedUser = invoke.getArgumentAt(0, User.class);
-            if (mockedUser.getId() == null) {
-                throw new IllegalArgumentException("User was not created yet.");
+            User user = invoke.getArgumentAt(0, User.class);
+
+            if (!users.keySet().contains(user.getId()) || user.getId() == null) {
+                throw new IllegalArgumentException("User was not created yet");
             }
-            users.replace(mockedUser.getId(), mockedUser);
-            return mockedUser;
+            users.replace(user.getId(), user);
+            return user;
         });
 
         when(userDao.deleteUser(any(User.class))).then(invoke -> {
-            User mockedUser = invoke.getArgumentAt(0, User.class);
-            users.remove(mockedUser.getId(), mockedUser);
-            return mockedUser;
+            User user = invoke.getArgumentAt(0, User.class);
+
+            if (!users.keySet().contains(user.getId()) || user.getId() == null) {
+                throw new IllegalArgumentException("User was not created yet");
+            }
+            users.remove(user.getId(), user);
+            return user;
         });
 
         when(userDao.findAllUsers())
@@ -87,12 +98,39 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
             return Collections.unmodifiableList(astronauts);
         });
 
-        when(userDao.findUserById(null)).then(invoke -> {
+        when(userDao.findUserById(any(Long.class))).then(invoke -> {
             Long index = invoke.getArgumentAt(0, Long.class);
             if(index == null){
                 throw new IllegalArgumentException("Null user id");
             }
-            return users.get(index);
+            if(users.keySet().contains(index)) {
+                return users.get(index);
+            } else {
+                throw new IllegalArgumentException("Not existing user");
+            }
+        });
+
+        when(userDao.findAllAvailableAstronauts()).then(invoke -> {
+            ArrayList astronauts = new ArrayList<>();
+            for(User u : users.values()) {
+                if (!u.isManager() && (u.getMission() == null)) {
+                    astronauts.add(u);
+                }
+            }
+            return Collections.unmodifiableList(astronauts);
+        });
+
+        when(missionDao.createMission(any(Mission.class))).then(invoke -> {
+            Mission mission = invoke.getArgumentAt(0, Mission.class);
+
+            if (mission.getId() != null) {
+                throw new IllegalArgumentException("Mission already exist");
+            }
+            long id = idCounter;
+            mission.setId(id);
+            missions.put(id, mission);
+            idCounter++;
+            return mission;
         });
     }
 
@@ -102,10 +140,9 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
         users.clear();
         User user1 = TestUtils.createUser("user1");
         User user2 = TestUtils.createUser("user2");
-        User user3 = TestUtils.createUser("user3");
-        User user4 = TestUtils.createUser("user4");
-        User user5 = TestUtils.createUser("user5");
-
+        User user3 = TestUtils.createUser("astronaut3");
+        User user4 = TestUtils.createUser("astronaut4");
+        User user5 = TestUtils.createUser("astronaut5");
         user1.setId(1L);
         user2.setId(2L);
         user3.setId(3L);
@@ -144,19 +181,31 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void acceptMission(){
-        throw new NotImplementedException(); //TODO
+        //TODO how?
+        Mission m = TestUtils.createMission("mission1");
+        User u = users.get(3L);
+        m.addAstronaut(u);
+        missionDao.createMission(m);
 
+        userService.acceptAssignedMission(u);
+        User updatedUser = userDao.findUserById(u.getId());
+        assertThat(updatedUser.hasAcceptedMission()).isTrue();
+        assertThat(updatedUser.getExplanation()).isEmpty();
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void acceptMissionNullUser(){
+        userService.acceptAssignedMission(null);
     }
 
     @Test
     public void rejectMission(){
-        throw new NotImplementedException(); //TODO
-
+        throw new NotImplementedException(); //TODO how?
     }
 
     @Test
     public void updateUserName(){
-        User u = userService.findUserById(1L);
+        User u = userDao.findUserById(1L); //TODO value, not reference (watch out)
         String originalName = u.getName();
         String newName = "Franta";
         u.setName(newName);
@@ -166,33 +215,36 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
         assertThat(userService.findUserById(1L).getName()).isEqualTo(newName);
     }
 
-    @Test(expectedExceptions = DataAccessException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void updateNullUser(){
-        throw new NotImplementedException(); //TODO
+        userService.updateUser(null);
     }
 
     @Test(expectedExceptions = DataAccessException.class)
     public void updateNonExistingUser(){
-        throw new NotImplementedException(); //TODO
+        User u = TestUtils.createUser("NotinDB");
+        userService.updateUser(u);
 
     }
 
     @Test
     public void deleteUser(){
-        throw new NotImplementedException(); //TODO
-
+        User u = userDao.findUserById(1L);
+        int sizeBefore = userDao.findAllUsers().size();
+        assertThat(userDao.findAllUsers()).contains(u);
+        userService.deleteUser(u);
+        assertThat(userDao.findAllUsers()).doesNotContain(u).hasSize(sizeBefore - 1);
     }
 
-    @Test(expectedExceptions = DataAccessException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void deleteNullUser(){
-        throw new NotImplementedException(); //TODO
-
+        userService.deleteUser(null);
     }
 
     @Test(expectedExceptions = DataAccessException.class)
     public void deleteNonExistingUser(){
-        throw new NotImplementedException(); //TODO
-
+        User u = TestUtils.createUser("NotinDB");
+        userService.deleteUser(u);
     }
 
     @Test
@@ -213,24 +265,26 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void findUserById(){
-        throw new NotImplementedException(); //TODO
-
+        assertThat(userService.findUserById(1L)).isEqualTo(users.get(1L));
     }
 
     @Test(expectedExceptions = DataAccessException.class)
     public void findNonExistingUserById(){
-        throw new NotImplementedException(); //TODO
-
+        userService.findUserById(idCounter + 10);
     }
 
-    @Test(expectedExceptions = DataAccessException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void findUserByNullId(){
         userService.findUserById(null);
     }
 
     @Test
     public void findAllAvailableAstronauts() {
-        throw new NotImplementedException(); //TODO
+        for (User u : users.values()) {
+            if(!u.isManager() && u.getMission() == null){
+                assertThat(userService.findAllAstronauts()).contains(u);
+            }
+        }
     }
 
 
