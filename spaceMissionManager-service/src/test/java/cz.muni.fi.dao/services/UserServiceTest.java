@@ -212,26 +212,25 @@ public class UserServiceTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void findUserById(Long id){
+    public void findUserById(){
         throw new NotImplementedException(); //TODO
 
     }
 
     @Test(expectedExceptions = DataAccessException.class)
-    public void findNonExistingUserById(Long id){
+    public void findNonExistingUserById(){
         throw new NotImplementedException(); //TODO
 
     }
 
     @Test(expectedExceptions = DataAccessException.class)
-    public void findUserByNullId(Long id){
+    public void findUserByNullId(){
         userService.findUserById(null);
     }
 
     @Test
     public void findAllAvailableAstronauts() {
         throw new NotImplementedException(); //TODO
-
     }
 
 
